@@ -1,0 +1,5 @@
+svg {
+  overflow: hidden;
+  display: inline-block;
+  max-width: 90vw;
+}

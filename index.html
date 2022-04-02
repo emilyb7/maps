@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Countries yay</title>
+  </head>
+
+  <body>
+    <div>
+      <div id="map">
+        <!-- image will be loaded here -->
+      </div>
+    </div>
+
+    <div id="buttons"></div>
+
+    <script>
+      const update = (model, [action]) => {
+        switch (action) {
+          case "INCORRECT_COUNTRY_NAME_SELECTED":
+            return { ...model, gameOver: true };
+          case "CORRECT_COUNTRY_NAME_SELECTED":
+            return {
+              ...model,
+              round: model.round + 1,
+              country: "de",
+              alternative: "gb",
+            };
+          default:
+            return model;
+        }
+      };
+
+      const button = (country, clickHandler) => {
+        const b = document.createElement("button");
+        b.textContent = country.name;
+        b["data-country"] = country.countryCode;
+        b.onclick = clickHandler;
+        return b;
+      };
+
+      const gameOverText = (round) => {
+        const t = document.createElement("p");
+        t.textContent = `Game Over! You guessed ${round} countries correctly.`;
+        return t;
+      };
+
+      const countries = {
+        gb: { name: "United Kingdom", countryCode: "gb" },
+        de: { name: "Germany", countryCode: "de" },
+      };
+
+      const correctCountryNameSelected = () => [
+        "CORRECT_COUNTRY_NAME_SELECTED",
+      ];
+      const incorrectCountryNameSelected = () => [
+        "INCORRECT_COUNTRY_NAME_SELECTED",
+      ];
+
+      const loadImage = (countryCode) =>
+        injectHTML(`./${countryCode}.svg`, document.querySelector("#map"));
+
+      const view = async (signal, model) => {
+        const rootElement = document.getElementById("buttons");
+        while (rootElement.firstChild) {
+          rootElement.removeChild(rootElement.firstChild);
+        }
+
+        if (model.gameOver) {
+          rootElement.appendChild(gameOverText(model.round));
+          return;
+        }
+
+        const onSelectCorrectCountryName = () => {
+          signal(correctCountryNameSelected());
+        };
+        const onSelectIncorrectCountryName = () =>
+          signal(incorrectCountryNameSelected());
+
+        rootElement.appendChild(
+          button(countries[model.country], onSelectCorrectCountryName)
+        );
+        rootElement.appendChild(
+          button(countries[model.alternative], onSelectIncorrectCountryName)
+        );
+        await loadImage(model.country);
+      };
+
+      async function injectHTML(filePath, elem) {
+        try {
+          const response = await fetch(filePath);
+          if (!response.ok) {
+            return;
+          }
+          const text = await response.text();
+          elem.innerHTML = text;
+        } catch (err) {
+          console.error(err.message);
+        }
+      }
+
+      (async () => {
+        let model = {
+          round: 0,
+          country: "gb",
+          alternative: "de",
+          gameOver: false,
+        };
+        const signal = (action) => {
+          model = update(model, action);
+          view(signal, model);
+        };
+
+        await view(signal, model);
+      })();
+    </script>
+  </body>
+</html>
