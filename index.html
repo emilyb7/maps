@@ -17,7 +17,19 @@
 
     <div id="buttons"></div>
 
-    <script>
+    <script type="module">
+      import countries from "./countries.js";
+
+      const randomlySort = (countries) =>
+        countries
+          .map((c) => [Math.random(), c])
+          .sort(([xa], [xb]) => {
+            return xa - xb;
+          })
+          .map(([_, value]) => value);
+
+      const randomItem = (countries) => randomlySort(countries)[0];
+
       const update = (model, [action]) => {
         switch (action) {
           case "INCORRECT_COUNTRY_NAME_SELECTED":
@@ -36,7 +48,7 @@
 
       const button = (country, clickHandler) => {
         const b = document.createElement("button");
-        b.textContent = country.name;
+        b.textContent = `${country.name} (${country.countryCode})`;
         b["data-country"] = country.countryCode;
         b.onclick = clickHandler;
         return b;
@@ -48,9 +60,10 @@
         return t;
       };
 
-      const countries = {
-        gb: { name: "United Kingdom", countryCode: "gb" },
-        de: { name: "Germany", countryCode: "de" },
+      const gameCompleteText = (round) => {
+        const t = document.createElement("p");
+        t.textContent = `You win! You guessed ${round} countries correctly.`;
+        return t;
       };
 
       const correctCountryNameSelected = () => [
@@ -60,10 +73,25 @@
         "INCORRECT_COUNTRY_NAME_SELECTED",
       ];
 
-      const loadImage = (countryCode) =>
-        injectHTML(`./${countryCode}.svg`, document.querySelector("#map"));
+      const loadImage = async (countryCode, customSvgParams = {}) => {
+        await injectHTML(
+          `./vectors/${countryCode}.svg`,
+          document.querySelector("#map")
+        );
+        const svg = document.querySelector("svg");
+        svg.viewBox.baseVal.width = customSvgParams.viewBoxWidth || 1000;
+        svg.viewBox.baseVal.height = customSvgParams.viewBoxHeight || 1300;
+        svg.viewBox.baseVal.x = customSvgParams.viewBoxX || 0;
+        svg.viewBox.baseVal.y = customSvgParams.viewBoxY || 0;
+        svg.height.baseVal.value = 400;
+        svg.width.baseVal.value = 400;
+      };
 
       const view = async (signal, model) => {
+        const nextCountry = model.countries[model.round];
+        const nextAlternative = randomItem(
+          model.countries.slice(model.round + 1)
+        );
         const rootElement = document.getElementById("buttons");
         while (rootElement.firstChild) {
           rootElement.removeChild(rootElement.firstChild);
@@ -74,19 +102,25 @@
           return;
         }
 
+        if (model.round === model.countries.length - 1) {
+          rootElement.appendChild(gameCompleteText(model.round));
+          return;
+        }
+
         const onSelectCorrectCountryName = () => {
           signal(correctCountryNameSelected());
         };
         const onSelectIncorrectCountryName = () =>
           signal(incorrectCountryNameSelected());
 
-        rootElement.appendChild(
-          button(countries[model.country], onSelectCorrectCountryName)
-        );
-        rootElement.appendChild(
-          button(countries[model.alternative], onSelectIncorrectCountryName)
-        );
-        await loadImage(model.country);
+        const buttons = randomlySort([
+          button(countries[nextCountry], onSelectCorrectCountryName),
+          button(countries[nextAlternative], onSelectIncorrectCountryName),
+        ]);
+
+        buttons.forEach((btn) => rootElement.appendChild(btn));
+
+        await loadImage(nextCountry, countries[nextCountry].customSvg);
       };
 
       async function injectHTML(filePath, elem) {
@@ -105,9 +139,9 @@
       (async () => {
         let model = {
           round: 0,
-          country: "gb",
           alternative: "de",
           gameOver: false,
+          countries: randomlySort(Object.keys(countries)),
         };
         const signal = (action) => {
           model = update(model, action);

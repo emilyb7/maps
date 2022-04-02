@@ -3,3 +3,12 @@ svg {
   display: inline-block;
   max-width: 90vw;
 }
+
+#buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  padding: 1rem;
+}
