@@ -7,6 +7,8 @@ body {
 h1 {
   margin: 0;
   padding: 1rem;
+  text-align: center;
+  font-size: 2rem;
 }
 
 svg * {
@@ -14,6 +16,10 @@ svg * {
   display: inline-block;
   max-width: 90vw;
   fill: #fffff0;
+}
+
+#map {
+  text-align: center;
 }
 
 #main {
@@ -24,6 +30,7 @@ svg * {
   display: flex;
   flex-direction: row;
   justify-content: stretch;
+  text-align: center;
 }
 
 button {
@@ -35,4 +42,17 @@ button {
   font-family: monospace;
   font-size: 1rem;
   margin-left: 2px;
+}
+
+p {
+  font-size: 1rem;
+}
+
+.startOver {
+  width: 100%;
+}
+
+.startOver button {
+  background-color: lightpink;
+  color: darkslategray;
 }
