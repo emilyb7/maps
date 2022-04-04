@@ -83,11 +83,17 @@
         "INCORRECT_COUNTRY_NAME_SELECTED",
       ];
 
-      const loadImage = async (countryCode, customSvgParams = {}) => {
-        await injectHTML(
-          `./vectors/${countryCode}.svg`,
-          document.querySelector("#map")
-        );
+      const loadImage = async (
+        countryCode,
+        customSvgParams = {},
+        mapCache,
+        updateCacheFn
+      ) => {
+        const text =
+          mapCache[countryCode] ||
+          (await fetchHtml(`./vectors/${countryCode}.svg`));
+        document.querySelector("#map").innerHTML = text;
+        updateCacheFn(countryCode, text);
         const svg = document.querySelector("svg");
         svg.viewBox.baseVal.width = customSvgParams.viewBoxWidth || 1000;
         svg.viewBox.baseVal.height = customSvgParams.viewBoxHeight || 1300;
@@ -97,7 +103,7 @@
         svg.width.baseVal.value = 400;
       };
 
-      const view = async (signal, model) => {
+      const view = async (signal, model, mapCache, updateCacheFn) => {
         const nextCountry = model.countries[model.round];
         const nextAlternative = randomItem(
           model.countries.slice(model.round + 1)
@@ -130,19 +136,25 @@
 
         buttons.forEach((btn) => rootElement.appendChild(btn));
 
-        await loadImage(nextCountry, countries[nextCountry].customSvg);
+        await loadImage(
+          nextCountry,
+          countries[nextCountry].customSvg,
+          mapCache,
+          updateCacheFn
+        );
       };
 
-      async function injectHTML(filePath, elem) {
+      async function fetchHtml(filePath) {
         try {
           const response = await fetch(filePath);
           if (!response.ok) {
-            return;
+            return "";
           }
           const text = await response.text();
-          elem.innerHTML = text;
+          return text;
         } catch (err) {
           console.error(err.message);
+          return "";
         }
       }
 
@@ -153,12 +165,26 @@
           gameOver: false,
           countries: randomlySort(Object.keys(countries)),
         };
-        const signal = (action) => {
-          model = update(model, action);
-          view(signal, model);
+        let mapCache = {};
+
+        const updateCache = (countryCode, text) => {
+          mapCache = { ...mapCache, [countryCode]: text };
         };
 
-        view(signal, model);
+        const signal = (action) => {
+          model = update(model, action);
+          view(signal, model, { ...mapCache }, updateCache);
+        };
+
+        view(signal, model, { ...mapCache }, updateCache);
+
+        for (let countryCode of model.countries) {
+          const html = fetchHtml(`./vectors/${countryCode}.svg`).then(
+            (html) => {
+              updateCache(countryCode, html);
+            }
+          );
+        }
       })();
     </script>
   </body>
