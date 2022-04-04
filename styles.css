@@ -6,15 +6,20 @@ body {
 
 h1 {
   margin: 0;
-  padding: 1rem;
+  padding: 0.5rem;
   text-align: center;
   font-size: 2rem;
 }
 
-svg * {
+svg {
   overflow: hidden;
   display: inline-block;
   max-width: 90vw;
+  height: 280px;
+  width: 280px;
+}
+
+svg * {
   fill: #fffff0;
 }
 
@@ -23,7 +28,7 @@ svg * {
 }
 
 #main {
-  padding-top: 3rem;
+  padding-top: 2rem;
 }
 
 #buttons {
@@ -55,4 +60,15 @@ p {
 .startOver button {
   background-color: lightpink;
   color: darkslategray;
+}
+
+@media screen and (min-width: 1000px) {
+  svg {
+    height: 500px;
+    width: 500px;
+  }
+
+  #main {
+    padding-top: 3rem;
+  }
 }
