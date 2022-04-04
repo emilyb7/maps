@@ -1,14 +1,38 @@
-svg {
+body {
+  background-color: #2f4f4f;
+  font-family: monospace;
+  color: ivory;
+}
+
+h1 {
+  margin: 0;
+  padding: 1rem;
+}
+
+svg * {
   overflow: hidden;
   display: inline-block;
   max-width: 90vw;
+  fill: #fffff0;
+}
+
+#main {
+  padding-top: 3rem;
 }
 
 #buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: stretch;
 }
 
 button {
   padding: 1rem;
+  flex: 1;
+  border: 2px solid ivory;
+  background: transparent;
+  color: lightpink;
+  font-family: monospace;
+  font-size: 1rem;
+  margin-left: 2px;
 }

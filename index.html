@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <div>
+    <div id="main">
       <div id="map">
         <!-- image will be loaded here -->
       </div>
     </div>
+    <h1>Guess the country</h1>
 
     <div id="buttons"></div>
 
@@ -55,9 +56,17 @@
       };
 
       const gameOverText = (round) => {
+        const container = document.createElement("div");
+
         const t = document.createElement("p");
         t.textContent = `Game Over! You guessed ${round} countries correctly.`;
-        return t;
+        container.appendChild(t);
+        const startOverBtn = document.createElement("button");
+        startOverBtn.textContent = "Start again";
+        startOverBtn.onclick = () => window.location.reload();
+        container.appendChild(startOverBtn);
+
+        return container;
       };
 
       const gameCompleteText = (round) => {
