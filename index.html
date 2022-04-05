@@ -18,7 +18,6 @@
       </div>
     </div>
     <h1>Guess the country</h1>
-
     <div id="buttons"></div>
 
     <script type="module">
@@ -58,13 +57,17 @@
         return b;
       };
 
-      const gameOverText = (round) => {
+      const gameOverText = (score, countryName) => {
         const container = document.createElement("div");
         container.className = "startOver";
 
-        const t = document.createElement("p");
-        t.textContent = `Game Over! You guessed ${round} countries correctly.`;
-        container.appendChild(t);
+        const t1 = document.createElement("p");
+        const t2 = document.createElement("p");
+        t1.textContent = `Game Over! The correct answer was ${countryName}.`;
+        t2.textContent = `You guessed ${score} countries correctly.`;
+        container.appendChild(t1);
+        container.appendChild(t2);
+
         const startOverBtn = document.createElement("button");
         startOverBtn.textContent = "Start again";
         startOverBtn.onclick = () => window.location.reload();
@@ -117,7 +120,9 @@
         }
 
         if (model.gameOver) {
-          rootElement.appendChild(gameOverText(model.round));
+          rootElement.appendChild(
+            gameOverText(model.round, countries[nextCountry].name)
+          );
           return;
         }
 
