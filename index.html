@@ -104,19 +104,31 @@
         };
       };
 
-      const incorrectCountryNameSelected = (score) => async (signal) => {
-        await fetch("https://api.airtable.com/v0/appYTBTUXdLPDXhBT/Table%201", {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer keykaOOkL8hdk60CL", // yes go on steal my api key
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fields: { id: Math.random().toString(), score },
-          }),
-        }).catch(console.log);
-        return signal(["INCORRECT_COUNTRY_NAME_SELECTED"]);
-      };
+      const incorrectCountryNameSelected =
+        (score) => async (signal, getState) => {
+          const state = getState();
+          const round = state.round;
+          const finalCountry = state.countries[round];
+          await fetch(
+            "https://api.airtable.com/v0/appYTBTUXdLPDXhBT/Table%201",
+            {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer keykaOOkL8hdk60CL", // yes go on steal my api key
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                fields: {
+                  id: Math.random().toString(),
+                  score,
+                  origin: window.location.origin,
+                  finalCountry,
+                },
+              }),
+            }
+          ).catch(console.log);
+          return signal(["INCORRECT_COUNTRY_NAME_SELECTED"]);
+        };
 
       const loadImage = async (
         countryCode,
@@ -236,7 +248,7 @@
 
         const signal = (action) => {
           if (!Array.isArray(action)) {
-            return action(signal);
+            return action(signal, () => model);
           }
           model = update(model, action);
           view(signal, model, { ...mapCache }, updateCache);
