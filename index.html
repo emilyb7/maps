@@ -104,9 +104,19 @@
         };
       };
 
-      const incorrectCountryNameSelected = () => [
-        "INCORRECT_COUNTRY_NAME_SELECTED",
-      ];
+      const incorrectCountryNameSelected = (score) => async (signal) => {
+        await fetch("https://api.airtable.com/v0/appYTBTUXdLPDXhBT/Table%201", {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer keykaOOkL8hdk60CL", // yes go on steal my api key
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: { id: Math.random().toString(), score },
+          }),
+        }).catch(console.log);
+        return signal(["INCORRECT_COUNTRY_NAME_SELECTED"]);
+      };
 
       const loadImage = async (
         countryCode,
@@ -158,7 +168,7 @@
         };
 
         const onSelectIncorrectCountryName = () =>
-          signal(incorrectCountryNameSelected());
+          signal(incorrectCountryNameSelected(model.round));
 
         const correctButton = button(
           countries[nextCountry],
