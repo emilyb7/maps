@@ -8,7 +8,7 @@ h1 {
   margin: 0;
   padding: 0.5rem;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 svg {
@@ -65,6 +65,11 @@ p {
 
 .startOver {
   width: 100%;
+}
+
+.startOver p {
+  margin: 0;
+  margin-bottom: 0.5rem;
 }
 
 .startOver button {
