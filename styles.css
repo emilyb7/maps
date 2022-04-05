@@ -23,12 +23,20 @@ svg * {
   fill: #fffff0;
 }
 
+svg.flashing * {
+  fill: darkseagreen;
+}
+
 #scores {
   padding: 0.5rem;
 }
 
 #scores p {
   margin: 0;
+}
+
+#currentScore.flashing {
+  color: darkseagreen;
 }
 
 #map {
@@ -57,6 +65,11 @@ button {
   font-family: monospace;
   font-size: 1rem;
   margin-left: 2px;
+}
+
+button.flashing {
+  background: DarkSeaGreen;
+  color: darkslategray;
 }
 
 p {

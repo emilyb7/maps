@@ -38,19 +38,25 @@
           case "INCORRECT_COUNTRY_NAME_SELECTED":
             return { ...model, gameOver: true };
           case "CORRECT_COUNTRY_NAME_SELECTED":
+            return { ...model, flashing: true };
+          case "FLASHED":
             return {
               ...model,
               round: model.round + 1,
-              country: "de",
-              alternative: "gb",
+              flashing: false,
+              alternative: randomItem(model.countries.slice(model.round + 1)),
+              correctPosition: randomItem([0, 1]),
             };
           default:
             return model;
         }
       };
 
-      const button = (country, clickHandler) => {
+      const button = (country, clickHandler, isFlashing) => {
         const b = document.createElement("button");
+        if (isFlashing) {
+          b.className = "flashing";
+        }
         b.textContent = `${country.name} (${country.countryCode})`;
         b["data-country"] = country.countryCode;
         b.onclick = clickHandler;
@@ -82,9 +88,22 @@
         return t;
       };
 
-      const correctCountryNameSelected = () => [
-        "CORRECT_COUNTRY_NAME_SELECTED",
-      ];
+      const correctCountryWithFlash = () => (signal) =>
+        new Promise((resolve) => {
+          signal(["CORRECT_COUNTRY_NAME_SELECTED"]);
+          setTimeout(() => {
+            resolve();
+          }, 200);
+        });
+
+      const correctCountryNameSelected = () => {
+        return (signal) => {
+          return signal(correctCountryWithFlash()).then(() =>
+            signal(["FLASHED"])
+          );
+        };
+      };
+
       const incorrectCountryNameSelected = () => [
         "INCORRECT_COUNTRY_NAME_SELECTED",
       ];
@@ -93,7 +112,8 @@
         countryCode,
         customSvgParams = {},
         mapCache,
-        updateCacheFn
+        updateCacheFn,
+        isFlashing = false
       ) => {
         const text =
           mapCache[countryCode] ||
@@ -107,14 +127,16 @@
         svg.viewBox.baseVal.y = customSvgParams.viewBoxY || 0;
         svg.height.baseVal.value = 400;
         svg.width.baseVal.value = 400;
+        if (isFlashing) {
+          svg.classList.add("flashing");
+        }
       };
 
       const view = async (signal, model, mapCache, updateCacheFn) => {
         const nextCountry = model.countries[model.round];
-        const nextAlternative = randomItem(
-          model.countries.slice(model.round + 1)
-        );
+        const nextAlternative = model.alternative;
         const rootElement = document.getElementById("buttons");
+
         while (rootElement.firstChild) {
           rootElement.removeChild(rootElement.firstChild);
         }
@@ -134,23 +156,41 @@
         const onSelectCorrectCountryName = () => {
           signal(correctCountryNameSelected());
         };
+
         const onSelectIncorrectCountryName = () =>
           signal(incorrectCountryNameSelected());
 
-        const buttons = randomlySort([
-          button(countries[nextCountry], onSelectCorrectCountryName),
-          button(countries[nextAlternative], onSelectIncorrectCountryName),
-        ]);
+        const correctButton = button(
+          countries[nextCountry],
+          onSelectCorrectCountryName,
+          model.flashing
+        );
+        const incorrectButton = button(
+          countries[nextAlternative],
+          onSelectIncorrectCountryName,
+          false
+        );
+
+        const buttons = [
+          model.correctPosition === 0 ? correctButton : incorrectButton,
+          model.correctPosition === 0 ? incorrectButton : correctButton,
+        ];
 
         buttons.forEach((btn) => rootElement.appendChild(btn));
 
-        document.getElementById("currentScore").textContent = model.round;
+        if (model.flashing) {
+          document.getElementById("currentScore").textContent = model.round + 1;
+          document.getElementById("currentScore").className = "flashing";
+        } else {
+          document.getElementById("currentScore").textContent = model.round;
+        }
 
         await loadImage(
           nextCountry,
           countries[nextCountry].customSvg,
           mapCache,
-          updateCacheFn
+          updateCacheFn,
+          model.flashing
         );
       };
 
@@ -169,11 +209,14 @@
       }
 
       (async () => {
+        const orderedCountries = randomlySort(Object.keys(countries));
         let model = {
           round: 0,
-          alternative: "de",
           gameOver: false,
-          countries: randomlySort(Object.keys(countries)),
+          countries: orderedCountries,
+          flashing: false,
+          alternative: randomItem(orderedCountries.slice(1)),
+          correctPosition: randomItem([0, 1]),
         };
         let mapCache = {};
 
@@ -182,6 +225,9 @@
         };
 
         const signal = (action) => {
+          if (!Array.isArray(action)) {
+            return action(signal);
+          }
           model = update(model, action);
           view(signal, model, { ...mapCache }, updateCache);
         };
