@@ -10,6 +10,9 @@
 
   <body>
     <div id="main">
+      <div id="scores">
+        <p>⚡️&nbsp;<span id="currentScore">0</span></p>
+      </div>
       <div id="map">
         <!-- image will be loaded here -->
       </div>
@@ -135,6 +138,8 @@
         ]);
 
         buttons.forEach((btn) => rootElement.appendChild(btn));
+
+        document.getElementById("currentScore").textContent = model.round;
 
         await loadImage(
           nextCountry,

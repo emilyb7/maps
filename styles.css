@@ -23,12 +23,22 @@ svg * {
   fill: #fffff0;
 }
 
+#scores {
+  padding: 0.5rem;
+}
+
+#scores p {
+  margin: 0;
+}
+
 #map {
   text-align: center;
+  min-height: 280px;
+  padding-top: 0.5rem;
 }
 
 #main {
-  padding-top: 2rem;
+  padding-top: 0.5rem;
 }
 
 #buttons {
