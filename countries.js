@@ -133,6 +133,23 @@ const countries = {
   kw: { name: "Kuwait", countryCode: "kw" },
   ky: { name: "Cayman Islands", countryCode: "ky" },
   kz: { name: "Kazakhstan", countryCode: "kz" },
+  la: { name: "Laos", countryCode: "la" },
+  lb: { name: "Lebanon", countryCode: "lb" },
+  lc: { name: "Saint Lucia", countryCode: "lc" },
+  li: { name: "Liechtenstein", countryCode: "li" },
+  lk: { name: "Sri Lanka", countryCode: "lk" },
+  lr: { name: "Liberia", countryCode: "lr" },
+  ls: { name: "Lesotho", countryCode: "ls" },
+  lt: { name: "Lithuania", countryCode: "lt" },
+  lu: { name: "Luxembourg", countryCode: "lu" },
+  lv: { name: "Latvia", countryCode: "lv" },
+  ly: { name: "Libya", countryCode: "ly" },
+  ma: { name: "Morocco", countryCode: "ma" },
+  mc: { name: "Monaco", countryCode: "mc" },
+  md: { name: "Moldova", countryCode: "md" },
+  me: { name: "Montenegro", countryCode: "me" },
+  mf: { name: "Saint Martin", countryCode: "mf" },
+  mg: { name: "Madagascar", countryCode: "mg" },
 };
 
 export default countries;
