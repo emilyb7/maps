@@ -164,6 +164,7 @@
         }
 
         if (model.gameOver) {
+          document.querySelector("svg").classList.add("gameOver");
           rootElement.appendChild(
             gameOverText(model.round, countries[nextCountry].name)
           );

@@ -27,6 +27,10 @@ svg.flashing * {
   fill: darkseagreen;
 }
 
+svg.gameOver * {
+  fill: lightpink;
+}
+
 #scores {
   padding: 0.5rem;
 }
