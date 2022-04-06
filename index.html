@@ -106,6 +106,7 @@
 
       const incorrectCountryNameSelected =
         (score) => async (signal, getState) => {
+          signal(["INCORRECT_COUNTRY_NAME_SELECTED"]);
           const state = getState();
           const round = state.round;
           const finalCountry = state.countries[round];
@@ -127,7 +128,6 @@
               }),
             }
           ).catch(console.log);
-          return signal(["INCORRECT_COUNTRY_NAME_SELECTED"]);
         };
 
       const loadImage = async (
