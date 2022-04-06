@@ -124,7 +124,7 @@ const countries = {
   jp: { name: "Japan", countryCode: "jp" },
   ke: { name: "Kenya", countryCode: "ke" },
   kg: { name: "Kyrgyzstan", countryCode: "kg" },
-  kh: { name: "Camboda", countryCode: "kh" },
+  kh: { name: "Cambodia", countryCode: "kh" },
   ki: { name: "Kiribati", countryCode: "ki" },
   km: { name: "Comoros", countryCode: "km" },
   kn: { name: "Saint Kitts and Nevis", countryCode: "kn" },
