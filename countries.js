@@ -235,6 +235,17 @@ const countries = {
   us: { name: "United States", countryCode: "us" },
   uy: { name: "Uruguay", countryCode: "uy" },
   uz: { name: "Uzbekistan", countryCode: "uz" },
+  va: { name: "Vatican City", countryCode: "va" },
+  vc: { name: "Saint Vincent and the Grenadines", countryCode: "vc" },
+  ve: { name: "Venezuela", countryCode: "ve" },
+  vn: { name: "Vietnam", countryCode: "vn" },
+  vu: { name: "Vanuatu", countryCode: "vu" },
+  ws: { name: "Samoa", countryCode: "ws" },
+  ye: { name: "Yemen", countryCode: "ye" },
+  yt: { name: "Mayotte", countryCode: "yt" },
+  za: { name: "South Africa", countryCode: "za" },
+  zm: { name: "Zambia", countryCode: "zm" },
+  zw: { name: "Zimbabwe", countryCode: "zw" },
 };
 
 export default countries;
