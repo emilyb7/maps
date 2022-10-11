@@ -19,10 +19,10 @@ jobs:
           command: |
             npx serve
           background: true
-      - run:
-          name: "test"
-          command: |
-            curl --retry-delay 5 --retry 10  --retry-connrefused http://localhost:3000
+      # - run:
+      #     name: "test"
+      #     command: |
+      #       curl --retry-delay 5 --retry 10  --retry-connrefused http://localhost:3000
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
