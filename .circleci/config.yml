@@ -16,7 +16,10 @@ jobs:
       - checkout
       - run:
           name: "serve"
-          command: "npx serve"
+          command: 
+              | "npx serve"
+              | "curl http://localhost:3000"
+              | "pkill -SIGQUIT serve"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
