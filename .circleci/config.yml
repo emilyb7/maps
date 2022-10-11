@@ -23,6 +23,7 @@ jobs:
           name: "test"
           command: |
             wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:3001
+            curl http://localhost:3001
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
